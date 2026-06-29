@@ -14,26 +14,23 @@ import Layout from "./components/Layout";
 export default function App() {
 
   return (
-    <>
-      <h1 className="text-4xl font-bold text-blue-600">hello</h1>
 
-      <Routes>
+    <Routes>
 
-        <Route element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="campuses" element={<CampusesPage />} />
-          <Route path="campuses/:id" element={<CampusDetailPage />} />
-          <Route path="students" element={<StudentsPage />} />
-          <Route path="students/:id" element={<StudentDetailPage />} />
-          <Route path="campuses/add" element={<AddCampusPage />} />
-          <Route path="students/add" element={<AddStudentPage />} />
-          <Route path="campuses/:id/edit" element={<EditCampusPage />} />
-          <Route path="students/:id/edit" element={<EditStudentPage />} />
-          <Route path ="*" element ={<NotFoundPage />} />
-        </Route>
+      <Route element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="campuses" element={<CampusesPage />} />
+        <Route path="campuses/:id" element={<CampusDetailPage />} />
+        <Route path="students" element={<StudentsPage />} />
+        <Route path="students/:id" element={<StudentDetailPage />} />
+        <Route path="campuses/add" element={<AddCampusPage />} />
+        <Route path="students/add" element={<AddStudentPage />} />
+        <Route path="campuses/:id/edit" element={<EditCampusPage />} />
+        <Route path="students/:id/edit" element={<EditStudentPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
 
-      </Routes>
-    </>
+    </Routes>
   )
-  
+
 }
