@@ -14,3 +14,13 @@ export async function fetchStudentById(id: number): Promise<Student> {
   if (!response.ok) throw new Error(`Failed to retrieve student with id ${id}, (HTTP ${response.status})`);
   return response.json();
 }
+
+export async function editStudentProfile(updatedStudent: Student): Promise<Student> {
+  const response = await fetch(`${API_URL}/students/${updatedStudent.id}/edit`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedStudent)
+  });
+  if (!response.ok) throw new Error("Failed to update Student Profile");
+  return response.json();
+}

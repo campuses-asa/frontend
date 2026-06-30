@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
-import type { Campus } from '../types';
-import { useQuery } from "@tanstack/react-query";
-import { fetchStudentById } from '../api';
+import type { Student, Campus } from '../types';
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { fetchStudentById, editStudentProfile } from '../api';
 
 // REMOVE LATER: Mock campuses database matching Campus interface from types.ts
 const MOCK_CAMPUSES: Campus[] = [
@@ -33,6 +33,31 @@ export default function EditStudentPage() {
     queryKey: ["student", studentId],
     queryFn: () => fetchStudentById(studentId)
   });
+
+  const queryClient = useQueryClient();
+
+  const editMutation = useMutation({
+    mutationFn: (updatedStudent: Student) => editStudentProfile(updatedStudent),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["student", studentId] })
+  })
+
+  function handleSubmitEdits(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    // STILL NEED TO VALIDATE FORM FIELDS BEFORE SUBMITTING 
+    const formData = new FormData(e.currentTarget);
+    const updatedStudent: Student = {
+      id: studentId,
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
+      email: formData.get("email") as string,
+      gpa: parseFloat(formData.get("gpa") as string),
+      campusId: formData.get("campusId") ? parseInt(formData.get("campusId") as string, 10) : undefined,
+      imageUrl: formData.get("imageUrl") as string || undefined
+    };
+
+    editMutation.mutate(updatedStudent);
+  }
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 space-y-8">
@@ -179,7 +204,7 @@ export default function EditStudentPage() {
           );
         })()
       ) : student ? (
-        <form onSubmit={(e) => e.preventDefault()} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 transition-all duration-200">
+        <form onSubmit={handleSubmitEdits} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 transition-all duration-200">
           {/* Profile Picture Preview */}
           <div className="flex flex-col items-center gap-3 pb-6 border-b border-slate-100 dark:border-slate-800/80">
             <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-inner border border-slate-200/50 dark:border-slate-800/60 flex-shrink-0">
