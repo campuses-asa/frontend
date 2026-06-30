@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import type { Student, Campus } from '../types';
+import type { Campus } from '../types';
 import { useQuery } from "@tanstack/react-query";
 import { fetchStudentById } from '../api';
 
