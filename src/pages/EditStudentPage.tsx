@@ -1,7 +1,7 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import type { Student, Campus } from '../types';
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { fetchStudentById, editStudentProfile } from '../api';
+import { fetchStudentById, editStudentProfile, deleteStudent } from '../api';
 
 // REMOVE LATER: Mock campuses database matching Campus interface from types.ts
 const MOCK_CAMPUSES: Campus[] = [
@@ -38,8 +38,19 @@ export default function EditStudentPage() {
 
   const editMutation = useMutation({
     mutationFn: (updatedStudent: Student) => editStudentProfile(updatedStudent),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["student", studentId] })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["student", studentId] })
+      navigate(-1);
+    }
   })
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteStudent(studentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["students"] })
+      navigate("/students");
+    }
+  });
 
   function handleSubmitEdits(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -58,6 +69,8 @@ export default function EditStudentPage() {
 
     editMutation.mutate(updatedStudent);
   }
+
+  const navigate = useNavigate();
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 space-y-8">
@@ -336,6 +349,7 @@ export default function EditStudentPage() {
             <button
               type="button"
               className="w-full sm:w-auto px-5 py-2.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 text-sm font-semibold rounded-xl transition-colors duration-150 order-last sm:order-first"
+              onClick={() => deleteMutation.mutate()}
             >
               Delete Student
             </button>

@@ -24,3 +24,8 @@ export async function editStudentProfile(updatedStudent: Student): Promise<Stude
   if (!response.ok) throw new Error("Failed to update Student Profile");
   return response.json();
 }
+
+export async function deleteStudent(studentId: number): Promise<void> {
+  const response = await fetch(`${API_URL}/students/${studentId}`, { method: "DELETE" });
+  if (!response.ok) throw new Error("Failed to delete student");
+}
