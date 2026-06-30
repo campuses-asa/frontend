@@ -244,19 +244,27 @@ export default function EditStudentPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
-          <Link
-            to={`/students/${student.id}`}
-            className="w-full sm:w-auto px-5 py-2.5 text-center text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-800 transition-colors duration-150"
-          >
-            Cancel
-          </Link>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
           <button
-            type="submit"
-            className="w-full sm:w-auto px-6 py-2.5 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-sm font-semibold text-white rounded-xl shadow-sm transition-colors duration-150"
+            type="button"
+            className="w-full sm:w-auto px-5 py-2.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 text-sm font-semibold rounded-xl transition-colors duration-150 order-last sm:order-first"
           >
-            Save Changes
+            Delete Student
           </button>
+          <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-3">
+            <Link
+              to={`/students/${student.id}`}
+              className="w-full sm:w-auto px-5 py-2.5 text-center text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-800 transition-colors duration-150"
+            >
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-6 py-2.5 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-sm font-semibold text-white rounded-xl shadow-sm transition-colors duration-150"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
 
       </form>
