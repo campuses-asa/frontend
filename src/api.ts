@@ -42,3 +42,20 @@ export async function fetchCampusById(id:number): Promise<Campus> {
   if(!response.ok) throw new Error(`Failed to retrieve campus with id ${id} (HTTP ${response.status})`);
   return response.json();
 }
+
+export async function editCampusProfile(updatedCampus: Campus): Promise<Campus> {
+  const response = await fetch(`${API_URL}/campuses/${updatedCampus.id}/edit`, {
+    method: "PUT",
+    headers: { "Content-Type":"application/json"},
+    body: JSON.stringify(updatedCampus)
+  });
+  if(!response.ok) throw new Error(`Failed to update Campus Profile.`);
+  return response.json();
+}
+
+export async function deleteCampus(campusId: number): Promise<void> {
+  const response = await fetch(`${API_URL}/campuses/${campusId}`,{
+    method: "DELETE",
+  });
+  if(!response.ok) throw new Error(`Failed to delete Campus.`);
+}
