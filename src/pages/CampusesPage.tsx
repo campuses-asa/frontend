@@ -13,6 +13,7 @@ export default function CampusesPage() {
     queryKey: ["campuses"],
     queryFn: fetchAllCampuses,
   });
+  
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 space-y-12">
       {/* Centered Page Header */}

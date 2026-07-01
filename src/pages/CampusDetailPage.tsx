@@ -43,6 +43,7 @@ export default function CampusDetailPage() {
       queryClient.invalidateQueries({ queryKey: ["campus", campusId] });
     },
   });
+  
   return (
     <>
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 space-y-8">
@@ -125,10 +126,7 @@ export default function CampusDetailPage() {
                       Campus Not Found
                     </h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md">
-                      The campus with ID{" "}
-                      <span className="font-semibold">{campusId}</span> could
-                      not be found in our database. It may have been deleted or
-                      the link may be outdated.
+                      It may have been deleted or the link may be outdated.
                     </p>
                   </div>
 
@@ -379,10 +377,10 @@ export default function CampusDetailPage() {
                       {/* Un-enroll Button */}
                       <button
                         onClick={() => unenrollMutation.mutate(student)}
-                        disabled={unenrollMutation.isPending}
+                        disabled={unenrollMutation.isPending && unenrollMutation.variables.id === student.id}
                         className="shrink-0 px-3 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 border border-slate-200 dark:border-slate-800 hover:border-red-200 dark:hover:border-red-900/50 rounded-xl transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Un-enroll
+                        {unenrollMutation.isPending && unenrollMutation.variables.id === student.id ? "Un-enrolling..." : "Un-enroll"}
                       </button>
                     </div>
                   ))}
