@@ -31,7 +31,7 @@ export async function deleteStudent(studentId: number): Promise<void> {
 }
 
 // Campus stuff
-export async function fetchAllCampuses(): Promise<Campus> {
+export async function fetchAllCampuses(): Promise<Campus[]> {
   const response = await fetch(`${API_URL}/campuses`);
   if(!response.ok) throw new Error(`Failed to retrieve campus list (HTTP ${response.status})`);
   return response.json();
