@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import type { Campus } from "../types";
-import type { FormEvent } from "react";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { fetchCampusById, deleteCampus, editCampusProfile } from "../api";
 
@@ -10,9 +9,10 @@ type FormErrors = {
   address?: string;
   description?: string;
 };
+
 export default function EditCampusPage() {
   const { id } = useParams<{ id: string }>();
-  const campusId = id ? parseInt(id, 10) : 1;
+  const campusId = id ? parseInt(id, 10) : -1; // -1 ensures that error logic will run if we're unable to parse the id
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [errors, setErrors] = useState<FormErrors>({});
@@ -46,7 +46,7 @@ export default function EditCampusPage() {
     },
   });
 
-  function handleSubmitEdits(e: FormEvent<HTMLFormElement>) {
+  function handleSubmitEdits(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -75,6 +75,7 @@ export default function EditCampusPage() {
 
     editMutation.mutate(updatedCampus);
   }
+  
   return (
     <div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 space-y-8">
       {/* Navigation Header */}

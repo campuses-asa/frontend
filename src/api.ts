@@ -26,7 +26,9 @@ export async function editStudentProfile(updatedStudent: Student): Promise<Stude
 }
 
 export async function deleteStudent(studentId: number): Promise<void> {
-  const response = await fetch(`${API_URL}/students/${studentId}`, { method: "DELETE" });
+  const response = await fetch(`${API_URL}/students/${studentId}`, {
+    method: "DELETE"
+  });
   if (!response.ok) throw new Error("Failed to delete student");
 }
 
@@ -46,7 +48,7 @@ export async function fetchCampusById(id:number): Promise<Campus> {
 export async function editCampusProfile(updatedCampus: Campus): Promise<Campus> {
   const response = await fetch(`${API_URL}/campuses/${updatedCampus.id}/edit`, {
     method: "PUT",
-    headers: { "Content-Type":"application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updatedCampus)
   });
   if(!response.ok) throw new Error(`Failed to update Campus Profile.`);
@@ -55,7 +57,7 @@ export async function editCampusProfile(updatedCampus: Campus): Promise<Campus> 
 
 export async function deleteCampus(campusId: number): Promise<void> {
   const response = await fetch(`${API_URL}/campuses/${campusId}`,{
-    method: "DELETE",
+    method: "DELETE"
   });
   if(!response.ok) throw new Error(`Failed to delete Campus.`);
 }

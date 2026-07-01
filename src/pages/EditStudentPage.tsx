@@ -27,14 +27,14 @@ const MOCK_CAMPUSES: Campus[] = [
 
 export default function EditStudentPage() {
   const { id } = useParams<{ id: string }>();
-  const studentId = id ? parseInt(id, 10) : 1;
+  const studentId = id ? parseInt(id, 10) : -1; // -1 ensures that error logic will run if we're unable to parse the id
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: student, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["student", studentId],
     queryFn: () => fetchStudentById(studentId)
   });
-
-  const queryClient = useQueryClient();
 
   const editMutation = useMutation({
     mutationFn: (updatedStudent: Student) => editStudentProfile(updatedStudent),
@@ -69,8 +69,6 @@ export default function EditStudentPage() {
 
     editMutation.mutate(updatedStudent);
   }
-
-  const navigate = useNavigate();
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 space-y-8">
