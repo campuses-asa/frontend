@@ -7,13 +7,25 @@ const API_URL = "http://localhost:3666";
 export async function fetchAllStudents(): Promise<Student[]> {
   const response = await fetch(`${API_URL}/students`);
   if (!response.ok) throw new Error(`Failed to retrieve student list (HTTP ${response.status})`);
-  return response.json();
+
+  const rawData = await response.json();
+  // Convert gpa string to number
+  return rawData.map((student: any) => ({
+    ...student,
+    gpa: student.gpa ? Number(student.gpa) : 0 // Converts "3.8" to 3.8
+  })) as Student[];
 }
 
 export async function fetchStudentById(id: number): Promise<Student> {
   const response = await fetch(`${API_URL}/students/${id}`);
   if (!response.ok) throw new Error(`Failed to retrieve student with id ${id}, (HTTP ${response.status})`);
-  return response.json();
+
+  const rawData = await response.json();
+  // Convert gpa string to number
+  return {
+    ...rawData,
+    gpa: rawData.gpa ? Number(rawData.gpa) : 0
+  } as Student; 
 }
 
 export async function addStudent(newStudent: Student): Promise<Student> {
