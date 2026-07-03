@@ -1,46 +1,31 @@
 import { useParams, Link } from 'react-router-dom';
-import type { Campus } from '../types';
 import { useQuery } from "@tanstack/react-query";
-import { fetchStudentById } from '../api';
-
-// REMOVE LATER: Mock campuses database matching Campus interface from types.ts
-const MOCK_CAMPUSES: Campus[] = [
-  {
-    id: 1,
-    name: "Brooklyn College",
-    address: "2900 Bedford Ave, Brooklyn, NY 11210",
-    imageUrl: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=400&fit=crop",
-    description: "A beautiful historic campus located in the heart of Brooklyn, renowned for its liberal arts education and vibrant community."
-  },
-  {
-    id: 2,
-    name: "Queens College",
-    address: "65-30 Kissena Blvd, Queens, NY 11367",
-    imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop",
-    description: "Located in a park-like setting in Flushing, Queens, offering a stellar research environment and diverse student body."
-  },
-  {
-    id: 3,
-    name: "Hunter College",
-    address: "695 Park Ave, New York, NY 10065",
-    imageUrl: "https://images.unsplash.com/photo-1498243691581-b145c3f54a91?w=600&h=400&fit=crop",
-    description: "A premier public institution located in Manhattan, focused on academic excellence, accessibility, and high-impact research."
-  }
-];
+import { fetchStudentById, fetchCampusById } from '../api';
 
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const studentId = id ? parseInt(id, 10) : -1;
 
-  const { data: student, isLoading, isError, error, refetch } = useQuery({
+  const { data: student, isLoading: isLoadingStudent, isError: isErrorStudent, error: studentError, refetch: refetchStudent } = useQuery({
     queryKey: ["student", studentId],
     queryFn: () => fetchStudentById(studentId)
   });
 
-  // Retrieve campus information if the student is assigned to a campusId
-  const campus = student && student.campusId
-    ? MOCK_CAMPUSES.find(c => c.id === student.campusId)
-    : null;
+  const campusId = student?.campusId;
+
+  const { data: campus, isLoading: isLoadingCampus, isError: isErrorCampus, error: campusError, refetch: refetchCampus } = useQuery({
+    queryKey: ["campus", campusId],
+    queryFn: () => fetchCampusById(campusId!),
+    enabled: !!campusId
+  });
+
+  const isLoading = isLoadingStudent || (!!campusId && isLoadingCampus);
+  const isError = isErrorStudent || (!!campusId && isErrorCampus);
+  const error = studentError || campusError;
+  const refetch = () => {
+    refetchStudent();
+    if (campusId) refetchCampus();
+  };
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 space-y-8">

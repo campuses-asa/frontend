@@ -1,29 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import type { Student, Campus } from '../types';
+import type { Student } from '../types';
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { fetchStudentById, editStudentProfile, deleteStudent } from '../api';
-
-// REMOVE LATER: Mock campuses database matching Campus interface from types.ts
-const MOCK_CAMPUSES: Campus[] = [
-  {
-    id: 1,
-    name: "Brooklyn College",
-    address: "2900 Bedford Ave, Brooklyn, NY 11210",
-    description: "A beautiful historic campus located in the heart of Brooklyn."
-  },
-  {
-    id: 2,
-    name: "Queens College",
-    address: "65-30 Kissena Blvd, Queens, NY 11367",
-    description: "Located in a park-like setting in Flushing, Queens."
-  },
-  {
-    id: 3,
-    name: "Hunter College",
-    address: "695 Park Ave, New York, NY 10065",
-    description: "A premier public institution located in Manhattan."
-  }
-];
+import { fetchStudentById, editStudentProfile, deleteStudent, fetchAllCampuses } from '../api';
 
 export default function EditStudentPage() {
   const { id } = useParams<{ id: string }>();
@@ -31,10 +9,23 @@ export default function EditStudentPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: student, isLoading, isError, error, refetch } = useQuery({
+  const { data: student, isLoading: isLoadingStudent, isError: isErrorStudent, error: studentError, refetch: refetchStudent } = useQuery({
     queryKey: ["student", studentId],
     queryFn: () => fetchStudentById(studentId)
   });
+
+  const { data: campuses, isLoading: isLoadingCampuses, isError: isErrorCampuses, error: campusesError, refetch: refetchCampuses } = useQuery({
+    queryKey: ["campuses"],
+    queryFn: fetchAllCampuses
+  });
+
+  const isLoading = isLoadingStudent || isLoadingCampuses;
+  const isError = isErrorStudent || isErrorCampuses;
+  const error = studentError || campusesError;
+  const refetch = () => {
+    refetchStudent();
+    refetchCampuses();
+  };
 
   const editMutation = useMutation({
     mutationFn: (updatedStudent: Student) => editStudentProfile(updatedStudent),
@@ -318,7 +309,7 @@ export default function EditStudentPage() {
                 className="w-full px-4 py-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all text-sm text-slate-900 dark:text-white"
               >
                 <option value="">Not enrolled</option>
-                {MOCK_CAMPUSES.map((c) => (
+                {(campuses || []).map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
                   </option>
