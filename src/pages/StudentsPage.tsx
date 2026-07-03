@@ -1,19 +1,33 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllStudents } from '../api';
-
-// REMOVE LATER: Mock campuses names map to resolve campus names visually
-const MOCK_CAMPUSES: Record<number, string> = {
-  1: "Brooklyn College",
-  2: "Queens College",
-  3: "Hunter College"
-};
+import { fetchAllStudents, fetchAllCampuses } from '../api';
 
 export default function StudentsPage() {
-  const { data: students, isLoading, isError, error, refetch } = useQuery({
+  const { data: students, isLoading: isLoadingStudents, isError: isErrorStudents, error: studentsError, refetch: refetchStudents } = useQuery({
     queryKey: ["students"],
     queryFn: fetchAllStudents
   });
+
+  const { data: campuses, isLoading: isLoadingCampuses, isError: isErrorCampuses, error: campusesError, refetch: refetchCampuses } = useQuery({
+    queryKey: ["campuses"],
+    queryFn: fetchAllCampuses
+  });
+
+  const isLoading = isLoadingStudents || isLoadingCampuses;
+  const isError = isErrorStudents || isErrorCampuses;
+  const error = studentsError || campusesError;
+  const refetch = () => {
+    refetchStudents();
+    refetchCampuses();
+  };
+
+  // Map campus id to name
+  const campusMap = new Map<number, string>();
+  if (campuses) {
+    campuses.forEach((campus) => {
+      campusMap.set(campus.id, campus.name);
+    });
+  }
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 space-y-12">
@@ -152,8 +166,8 @@ export default function StudentsPage() {
                     {student.firstName} {student.lastName}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                    {student.campusId && student.campusId in MOCK_CAMPUSES
-                      ? MOCK_CAMPUSES[student.campusId]
+                    {student.campusId && campusMap.has(student.campusId)
+                      ? campusMap.get(student.campusId)
                       : "Unassigned Campus"}
                   </p>
                 </div>
