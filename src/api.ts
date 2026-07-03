@@ -1,7 +1,6 @@
 import { type Student, type Campus} from './types.ts';
 
-// CURRENTLY USING LOCALLY HOSTED SERVER
-const API_URL = "http://localhost:3666";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3667";
 
 // Student stuff
 export async function fetchAllStudents(): Promise<Student[]> {
